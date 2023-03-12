@@ -4,9 +4,9 @@
 #include <random> 
 #include <chrono> 
 #include <vector>
-std::string Rank[] = {"Ace", "Eight", "Nine", "Ten", "Jack", "Queen", "King"}; 
-std::string Suit[] = {"Clubs", "Diamonds", "Hearts", "Spades"}; 
-int NumVal[] = {14, 8, 9, 10, 11, 12, 13}; 
+std::string Rank[] = {"Eight", "Nine", "Ten", "Jack", "Queen", "King","Ace"}; 
+std::string Suit[] = {"Clubs", "Spades", "Diamonds", "Hearts"}; 
+int NumVal[] = {8, 9, 10, 11, 12, 13, 14}; 
  
 // Creates a vector of 28 cards using the Rank, Suit and NumVal Arrays 
 Deck::Deck() 

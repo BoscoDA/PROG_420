@@ -25,7 +25,7 @@ public:
     void ShuffleDeck(); 
     std::vector<Card *> GetDeck() { return this->deck; } 
     void DisplayDeck(); 
-    Card *DealCard(); 
+    Card *DealCard();
  
 private: 
     std::vector<Card *> deck; 

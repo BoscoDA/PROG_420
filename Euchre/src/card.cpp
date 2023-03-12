@@ -9,5 +9,5 @@ Card::Card(std::string suit, std::string rank, int value)
  
 void Card::DisplayCard() 
 { 
-    std::cout << this->Rank << " of " << this->Suit << std::endl; 
+    std::cout << this->Rank << " of " << this->Suit; 
 } 
