@@ -26,7 +26,7 @@ public:
     bool validCard(Card *card);
     inline std::string GetName() { return Name; }
     Card *PlayCard(int index);
-    int ChooseCard(std::string led_suit);
+    int ChooseCard(std::string led_suit, std::vector<Card*> in_play);
     int Score = 0;
 
 private:

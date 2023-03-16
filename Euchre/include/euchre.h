@@ -27,6 +27,7 @@ public:
     void ScoreHand();
     std::vector<Card*> Trick();
     void ScoreTrick(std::vector<Card*> playedCards);
+    void UpdateCardValues();
     
 
 private:

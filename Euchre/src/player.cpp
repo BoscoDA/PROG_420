@@ -26,31 +26,61 @@ Card *Player::PlayCard(int index){
     delete temp;
 }
 
-int Player::ChooseCard(std::string led_suit){
+int Player::ChooseCard(std::string led_suit, std::vector<Card*> in_play){
     bool valid_card = false;
-    int choice;
+    int choice = 7;
+    Card *best = new Card("TEMP", "TEMP", 0);
+
+    int output = 0;
+
     DetermineValidCards(led_suit);
 
-    while (!valid_card)
-    {
-        std::cout << "Enter the index of the card you would like to play: ";
-        std::cin >> choice;
-        std::cout << "" << std::endl;
+    std::cout << "Valid Cards: [";
 
-        if(choice > Hand.size())
-        {
-            std::cout << "Not a valid choice!" << std::endl;
-        }
-        else if(!validCard(Hand[choice-1])){
-            std::cout << "Not a valid choice!" << std::endl;
-        }
+    for(auto c : Valid_Cards){
+        c->DisplayCard();
+        std::cout << ", ";
+    }
 
-        else{
-            valid_card = true;
+    std::cout << "]" << std::endl;
+
+    //Determine best card in play
+    for(auto c:in_play){
+        if(best->GetNumValue()<c->GetNumValue()){
+            best = c;
         }
     }
 
-    return choice - 1;
+    //Determine players best valid card
+    for(int i = 0; i < Valid_Cards.size(); i++){
+        if(choice == 7){
+            choice = i;
+        }
+        else if(Valid_Cards[choice]->GetNumValue() < Valid_Cards[i]->GetNumValue()){
+            choice = i;
+        }
+    }
+
+    //If player's best card does not beat best card in play, return lowest value valid card
+    if(Valid_Cards[choice]->GetNumValue() < best->GetNumValue()){
+        for(int i = 0; i < Valid_Cards.size(); i++){
+            if(choice == 7){
+                choice = i;
+            }
+            else if(Valid_Cards[choice]->GetNumValue() > Valid_Cards[i]->GetNumValue()){
+            choice = i;
+            }
+        }
+    }
+
+    //Find card in hand
+    for(int i = 0; i < Hand.size(); i++){
+        if(Hand[i]->GetNumValue() == Valid_Cards[choice]->GetNumValue()){
+            output = i;
+        }
+    }
+
+    return output;
 }
 
 void Player::DetermineValidCards(std::string led_suit){

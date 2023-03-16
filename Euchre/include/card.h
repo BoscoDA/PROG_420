@@ -15,9 +15,10 @@ public:
     int GetNumValue() { return NumValue; } 
     void SetNumValue(int val) { NumValue = val; } 
     void DisplayCard(); 
+    int True_Num_Value;
  
 private: 
     std::string Suit; 
     std::string Rank; 
-    int NumValue; 
+    int NumValue;
 }; 

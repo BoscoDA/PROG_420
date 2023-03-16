@@ -9,12 +9,12 @@ Euchre::Euchre(){
     players.push_back(&bot2);
     players.push_back(&bot3);
     players.push_back(&bot4);
-
-    current_deck = new Deck();
 }
 
 void Euchre::GameLoop(){
 
+    while(team1_score != 10 && team2_score != 10)
+    {
         Setup();
         Bid();
 
@@ -24,17 +24,18 @@ void Euchre::GameLoop(){
                 ScoreTrick(Trick());
             }
 
-            for(auto p : players)
-            {
-                std::cout << p->GetName() << " score: " << p->Score << std::endl;
-            }
+            // for(auto p : players)
+            // {
+            //     std::cout << p->GetName() << " score: " << p->Score << std::endl;
+            // }
         }
 
         ScoreHand();
-    
+    }
 }
 
 void Euchre::Setup(){
+    current_deck = new Deck();
     // Shuffle Deck
     current_deck->ShuffleDeck();
 
@@ -51,13 +52,15 @@ void Euchre::Setup(){
         p->SetHand(current_deck->DealCard());
         p->SetHand(current_deck->DealCard());
     }
+
+    
 }
 
 void Euchre::Bid(){
     Card *trump = current_deck->DealCard();
     std::cout << "Bidding on trump: " << trump->GetSuit() <<std::endl;
 
-    for(int i = 0; i < 4; i++)
+    for(int i = 0; i <= 4; i++)
     {
         char response;
         std::cout<< "\n" <<players[i]->GetName() << " call trump? y/n" <<std::endl;
@@ -107,6 +110,32 @@ void Euchre::Bid(){
     {
         sister_suit = "Spades";
     }
+
+     //set new values for each of the cards
+    for(auto p : players){
+        for(int i = 0; i <= 4; i++){
+            int temp = p->GetHand()[i]->GetNumValue();
+            if(p->GetHand()[i]->GetSuit() == trump_suit){
+                int temp = p->GetHand()[i]->GetNumValue();
+                if(p->GetHand()[i]->GetRank() == "Jack"){
+                    p->GetHand()[i]->True_Num_Value = temp + 26;
+                }
+                else{
+                   p->GetHand()[i]->True_Num_Value = temp + 20 ;
+                }
+            }
+
+            else if(p->GetHand()[i]->GetRank() == "Jack" && p->GetHand()[i]->GetSuit() == sister_suit){
+                p->GetHand()[i]->True_Num_Value = temp + 25;
+            }
+            else if(p->GetHand()[i]->GetSuit() == led_suit){
+                p->GetHand()[i]->True_Num_Value = temp +10;
+            }
+            else{
+                p->GetHand()[i]->True_Num_Value = temp;
+            }
+        }
+    }
     
 }
 
@@ -128,14 +157,16 @@ std::vector<Card*> Euchre::Trick(){
         int tempPlayerIndex = ((firstPlayer + i)%4); 
         std::cout << players[tempPlayerIndex]->GetName() <<std::endl;
         players[tempPlayerIndex]->DisplayHand();
-        int card = players[tempPlayerIndex]->ChooseCard(led_suit);
+        int card = players[tempPlayerIndex]->ChooseCard(led_suit, trickCards);
+
+        if(i == 0){
+            led_suit = players[tempPlayerIndex]->GetHand()[card]->GetSuit();
+            UpdateCardValues();
+        }
 
         temp = players[tempPlayerIndex]->PlayCard(card);
         trickCards.push_back(temp);
 
-        if(i == 0){
-            led_suit = temp->GetSuit();
-        }
         std::cout << players[tempPlayerIndex]->GetName() << " plays the ";
         temp->DisplayCard();
         std::cout << "" <<std::endl;
@@ -148,31 +179,6 @@ std::vector<Card*> Euchre::Trick(){
 void Euchre::ScoreTrick(std::vector<Card*> playedCards){
     Card *WinningCard = playedCards[0];
     int winIndex = firstPlayer;
-
-    for(int i = 0; i < 4; i++)
-    {
-        int temp = playedCards[i]->GetNumValue();
-
-        if(playedCards[i]->GetSuit() == trump_suit){
-            int temp = playedCards[i]->GetNumValue();
-            if(playedCards[i]->GetRank() == "Jack"){
-                playedCards[i]->SetNumValue(playedCards[i]->GetNumValue()+26);
-            }
-            else{
-                playedCards[i]->SetNumValue(temp+20);
-            }
-        }
-
-        else if(playedCards[i]->GetRank() == "Jack" && playedCards[i]->GetSuit() == sister_suit)
-        {
-            playedCards[i]->SetNumValue(temp+25);
-        }
-
-        else if(playedCards[i]->GetSuit() == led_suit)
-        {
-            playedCards[i]->SetNumValue(temp+10);
-        }
-    }
 
     for(int i = 1; i < 4; i++)
     {
@@ -196,9 +202,11 @@ void Euchre::ScoreHand(){
     if(trump_team == 1)
     {
         if(team1_tricks_won >= 3){
+            std::cout<<"Team 1 has won the hand!" << std::endl;
             team1_score++;
         }
         else{
+            std::cout<<"Team 2 has won the hand!" << std::endl;
             team2_score++;
             team1_score--;
         }
@@ -207,15 +215,27 @@ void Euchre::ScoreHand(){
     if(trump_team == 2)
     {
         if(team2_tricks_won >= 3){
+            std::cout<<"Team 2 has won the hand!" << std::endl;
             team2_score++;
         }
         else{
+            std::cout<<"Team 1 has won the hand!" << std::endl;
             team1_score++;
             team2_score--;
         }
     }
+}
 
+void Euchre::UpdateCardValues(){
+    
+    //set new values for each of the cards
     for(auto p : players){
-        p->Score = 0;
+        for(int i = 0; i < p->GetHand().size(); i++){
+            int temp = p->GetHand()[i]->GetNumValue();
+
+            if(p->GetHand()[i]->GetSuit() == led_suit){
+                p->GetHand()[i]->True_Num_Value = temp +10;
+            }
+        }
     }
 }
