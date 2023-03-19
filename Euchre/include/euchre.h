@@ -28,7 +28,9 @@ public:
     std::vector<Card*> Trick();
     void ScoreTrick(std::vector<Card*> playedCards);
     void UpdateCardValues();
-    
+    void DetermineSisterSuit();
+    void ResetRound();
+    void EndGame();
 
 private:
     Player bot1 = Player("NULL");
@@ -41,7 +43,7 @@ private:
     std::string sister_suit = "";
     std::string led_suit = "";
     int trump_team;
-    int team1_score;
-    int team2_score;
+    int team1_score = 0;
+    int team2_score = 0;
     int firstPlayer = 0;
 };

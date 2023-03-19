@@ -33,16 +33,7 @@ int Player::ChooseCard(std::string led_suit, std::vector<Card*> in_play){
 
     int output = 0;
 
-    DetermineValidCards(led_suit);
-
-    std::cout << "Valid Cards: [";
-
-    for(auto c : Valid_Cards){
-        c->DisplayCard();
-        std::cout << ", ";
-    }
-
-    std::cout << "]" << std::endl;
+    Determine_Valid_Cards(led_suit);
 
     //Determine best card in play
     for(auto c:in_play){
@@ -83,7 +74,7 @@ int Player::ChooseCard(std::string led_suit, std::vector<Card*> in_play){
     return output;
 }
 
-void Player::DetermineValidCards(std::string led_suit){
+void Player::Determine_Valid_Cards(std::string led_suit){
     Valid_Cards.clear();
 
     for(auto c : Hand){
@@ -107,4 +98,43 @@ bool Player::validCard(Card *card){
     }
 
     return false;
+}
+
+int Player::Rate_Hand(std::string trump_suit, std::string sister_suit){
+    int score = 0;
+
+    for(int i = 0; i < 4; i++){
+        if(Hand[i]->GetSuit() == trump_suit){
+            
+            if(Hand[i]->GetRank() == "Jack"){
+                score += 4;
+            }
+            else if(Hand[i]->GetRank() == "Ace" || Hand[i]->GetRank() == "King" || Hand[i]->GetRank() == "Queen"){
+                score += 3;
+            }
+            else{
+                score += 2;
+            }
+        }
+        else if(Hand[i]->GetSuit() == sister_suit && Hand[i]->GetRank() == "Jack"){
+            score += 4;
+        }
+        else if(Hand[i]->GetRank() == "Ace")
+        {
+            score += 2;
+        }
+        else if(Hand[i]->GetRank() == "King" || Hand[i]->GetRank() == "Queen" || Hand[i]->GetRank() == "Jack"){
+            score += 1;
+        }
+    }
+
+    return score;
+}
+
+void Player::DiscardHand(){
+    for (auto d : Hand){
+        delete d;
+    }
+
+    Hand.clear();
 }
