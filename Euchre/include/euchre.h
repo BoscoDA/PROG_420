@@ -27,6 +27,7 @@ public:
     void ScoreHand();
     std::vector<Card*> Trick();
     void ScoreTrick(std::vector<Card*> playedCards);
+    void PlayHand();
     void UpdateCardValues();
     void DetermineSisterSuit();
     void ResetRound();
@@ -46,4 +47,5 @@ private:
     int team1_score = 0;
     int team2_score = 0;
     int firstPlayer = 0;
+    int dealer = 3;
 };

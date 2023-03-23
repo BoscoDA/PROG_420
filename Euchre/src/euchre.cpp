@@ -15,22 +15,26 @@ Euchre::Euchre(){
 void Euchre::GameLoop(){
 
     char temp;
-    while(team1_score != 3 && team2_score != 3)
+    while(team1_score != 10 && team2_score != 10)
     {
         Setup();
         Bid();
 
         if(trump_suit!=""){
-            std::cout << "_________________________SCORE_________________________" << std::endl;
+            if(trump_team == 1){
+
+                std::cout << "\nTeam 1: Makers\nTeam 2: Defenders" << std::endl;
+            }
+            else{
+                std::cout << "\nTeam 1: Defenders\nTeam 2: Makers" << std::endl;
+            }
+
+            PlayHand();
+
+            std::cout << "\nSCORE ------------------------------------------------------------------------------" << std::endl;
             std::cout << "Team 1: " << team1_score << std::endl;
             std::cout << "Team 2: " << team2_score << std::endl;
-            std::cout << "_______________________________________________________" << std::endl;
-
-            for(int i = 0; i < 5; i++)
-            {
-                ScoreTrick(Trick());
-            }
-            ScoreHand();
+            std::cout << "------------------------------------------------------------------------------------\n" << std::endl;
         }
 
         ResetRound();
@@ -48,17 +52,19 @@ void Euchre::Setup(){
     
 
     // Deal cards: 3 cards then 2 cards, 5 total
-    for (auto p : players)
+    for (int i = 0; i<4; i++)
     {
-        p->SetHand(current_deck->DealCard());
-        p->SetHand(current_deck->DealCard());
-        p->SetHand(current_deck->DealCard());
+        int tempPlayerIndex = ((dealer + 1 + i)%4); 
+        players[tempPlayerIndex]->SetHand(current_deck->DealCard());
+        players[tempPlayerIndex]->SetHand(current_deck->DealCard());
+        players[tempPlayerIndex]->SetHand(current_deck->DealCard());
     }
 
-    for(auto p : players)
+    for(int i = 0; i<4; i++)
     {
-        p->SetHand(current_deck->DealCard());
-        p->SetHand(current_deck->DealCard());
+        int tempPlayerIndex = ((dealer + 1 + i)%4); 
+        players[tempPlayerIndex]->SetHand(current_deck->DealCard());
+        players[tempPlayerIndex]->SetHand(current_deck->DealCard());
     }
 
     
@@ -87,22 +93,22 @@ void Euchre::DetermineSisterSuit(){
 void Euchre::Bid(){
     Card *trump = current_deck->DealCard();
     DetermineSisterSuit();
-
-    std::cout << "Bidding on trump: ";
+    std::cout << "\nBID --------------------------------------------------------------------------------" << std::endl;
+    std::cout << "\nBidding on trump: ";
     trump->DisplayCard();
+    std::cout << "\n";
 
     for(int i =0; i < 4; i++){
-        std::cout<< "\n" <<players[i]->GetName() << " call trump?" <<std::endl;
+        int tempPlayerIndex = ((dealer + 1 + i)%4); 
+        std::cout<< "\n" <<players[tempPlayerIndex]->GetName() << " | ";
 
-        players[i]->DisplayHand();
-
-        int temp = players[i]->Rate_Hand(trump->GetSuit(), sister_suit);
-        std::cout << temp << std::endl;
-        if(temp >= 6){
+        double temp = players[tempPlayerIndex]->Rate_Hand(trump->GetSuit(), sister_suit);
+        
+        if(temp >= 0.25){
             std::cout << "Order it up!" << std::endl;
             trump_suit = trump->GetSuit();
-
-            if(i == 0 || i == 2){
+            
+            if(tempPlayerIndex == 0 || tempPlayerIndex == 2){
                 trump_team = 1;
             }
             else{
@@ -116,37 +122,7 @@ void Euchre::Bid(){
         }
     }
 
-    // for(int i = 0; i < 4; i++)
-    // {
-    //     char response;
-    //     std::cout<< "\n" <<players[i]->GetName() << " call trump? y/n" <<std::endl;
-    //     std::cin >> response;
-
-    //      while(response != 'y' && response != 'n' && response != 'Y' && response != 'N')
-    //      {
-    //          std::cout << "That is not a valid input!" << std::endl;
-    //          std::cout<< players[i]->GetName() << " call trump? y/n" <<std::endl;
-    //          std::cin >> response;
-    //      }
-
-    //     if(response == 'y' || response == 'Y')
-    //     {
-    //         std::cout << "Trump Called!" << std::endl;
-    //         trump_suit = trump->GetSuit();
-
-    //         if(i == 0 || i == 2){
-    //             trump_team = 1;
-    //         }
-    //         else{
-    //             trump_team = 2;
-    //         }
-    //         break;
-    //     }
-    //     else
-    //     {
-    //         std::cout << players[i]->GetName() << " passed." << std::endl;
-    //     }
-    // }
+    std::cout << "\n------------------------------------------------------------------------------------" << std::endl;
 
     DetermineSisterSuit();
     
@@ -175,27 +151,17 @@ void Euchre::Bid(){
             }
         }
     }
-    
 }
 
 std::vector<Card*> Euchre::Trick(){
     std::vector<Card*> trickCards;
     Card *temp;
 
+    
     for(int i = 0; i < 4; i++)
     {
-        std::cout << "-------------------------------------------------------------------------------------------------" <<std::endl;
-        // Display cards already played
-        std::cout << "Cards played: [";
-        for(auto cards : trickCards){
-            cards->DisplayCard();
-            std::cout << ", ";
-        }
-        std::cout << "]\n" << std::endl;
+        int tempPlayerIndex = ((firstPlayer + i)%4);
 
-        int tempPlayerIndex = ((firstPlayer + i)%4); 
-        std::cout << players[tempPlayerIndex]->GetName() <<std::endl;
-        players[tempPlayerIndex]->DisplayHand();
         int card = players[tempPlayerIndex]->ChooseCard(led_suit, trickCards);
 
         if(i == 0){
@@ -209,9 +175,15 @@ std::vector<Card*> Euchre::Trick(){
         std::cout << players[tempPlayerIndex]->GetName() << " plays the ";
         temp->DisplayCard();
         std::cout << "" <<std::endl;
-        std::cout << "-------------------------------------------------------------------------------------------------" <<std::endl;
-
     }
+
+    std::cout << "\nCards played: [";
+    for(auto cards : trickCards){
+        cards->DisplayCard();
+        std::cout << ", ";
+    }
+    std::cout << "]\n" << std::endl;
+
     return trickCards;
 }
 
@@ -240,11 +212,11 @@ void Euchre::ScoreHand(){
     if(trump_team == 1)
     {
         if(team1_tricks_won >= 3){
-            std::cout<<"Team 1 has won the hand!" << std::endl;
+            std::cout<<"\nTeam 1 has won the hand!" << std::endl;
             team1_score++;
         }
         else{
-            std::cout<<"Team 2 has won the hand!" << std::endl;
+            std::cout<<"\nTeam 2 has won the hand!" << std::endl;
             team2_score++;
             if(team1_score > 0){
                 team1_score--;
@@ -270,6 +242,19 @@ void Euchre::ScoreHand(){
     }
 }
 
+void Euchre::PlayHand(){
+    for(int i = 0; i < 5; i++){
+            std::cout << "\nTrick " << i+1 << " ----------------------------------------------------------------------------"<<std::endl;
+            ScoreTrick(Trick());
+            std::cout << "------------------------------------------------------------------------------------" <<std::endl;
+        }
+
+    ScoreHand();
+
+    if(dealer < 4){ dealer++; }
+    else{ dealer = 0; }
+}
+
 void Euchre::UpdateCardValues(){
     
     //set new values for each of the cards
@@ -290,13 +275,16 @@ void Euchre::ResetRound(){
     }
 
     current_deck->GetDeck().clear();
+
+    trump_suit = "";
+    sister_suit = "";
 }
 
 void Euchre::EndGame(){
     if(team1_score == 10){
-        std::cout << "Team 1 won!" << std::endl;
+        std::cout << "\nTeam 1 won the game!" << std::endl;
     }
     else{
-        std::cout << "Team 2 won!" << std::endl;
+        std::cout << "\nTeam 2 won the game!" << std::endl;
     }
 }

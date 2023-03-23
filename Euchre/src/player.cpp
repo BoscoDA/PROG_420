@@ -100,35 +100,44 @@ bool Player::validCard(Card *card){
     return false;
 }
 
-int Player::Rate_Hand(std::string trump_suit, std::string sister_suit){
-    int score = 0;
+double Player::Rate_Hand(std::string trump_suit, std::string sister_suit){
+    double score = 0;
 
     for(int i = 0; i < 4; i++){
         if(Hand[i]->GetSuit() == trump_suit){
             
             if(Hand[i]->GetRank() == "Jack"){
-                score += 4;
+                score += 1;
             }
-            else if(Hand[i]->GetRank() == "Ace" || Hand[i]->GetRank() == "King" || Hand[i]->GetRank() == "Queen"){
-                score += 3;
+            else if(Hand[i]->GetRank() == "Ace" ){
+                score += 0.5;
+            }
+            else if(Hand[i]->GetRank() == "King"){
+                score += 0.45;
+            }
+            else if(Hand[i]->GetRank() == "Queen"){
+                score += 0.4;
             }
             else{
-                score += 2;
+                score += 0.2;
             }
         }
         else if(Hand[i]->GetSuit() == sister_suit && Hand[i]->GetRank() == "Jack"){
-            score += 4;
+            score += 0.75;
         }
         else if(Hand[i]->GetRank() == "Ace")
         {
-            score += 2;
+            score += 0.4;
         }
         else if(Hand[i]->GetRank() == "King" || Hand[i]->GetRank() == "Queen" || Hand[i]->GetRank() == "Jack"){
-            score += 1;
+            score += 0.3;
+        }
+        else{
+            score += 0.1;
         }
     }
 
-    return score;
+    return score/5;
 }
 
 void Player::DiscardHand(){

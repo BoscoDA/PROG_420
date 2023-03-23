@@ -24,7 +24,7 @@ public:
     void DisplayHand();
     void Determine_Valid_Cards(std::string led_suit);
     bool validCard(Card *card);
-    int Rate_Hand(std::string trump_suit, std::string sister_suit);
+    double Rate_Hand(std::string trump_suit, std::string sister_suit);
     inline std::string GetName() { return Name; }
     Card *PlayCard(int index);
     int ChooseCard(std::string led_suit, std::vector<Card*> in_play);
