@@ -1,6 +1,6 @@
 # Compile Instructions
 
-## 1). CMake and Build Directory
+## 1). CMake and Build Directory (REQUIRES cmake 3.1 or higher!!)
 
 Navigate to the Euchre folder, once ther run the following command to create and navigate to a build folder"
 
