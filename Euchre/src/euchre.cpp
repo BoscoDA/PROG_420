@@ -127,30 +127,7 @@ void Euchre::Bid(){
     DetermineSisterSuit();
     
      //set new values for each of the cards
-    for(auto p : players){
-        for(int i = 0; i <= 4; i++){
-            int temp = p->GetHand()[i]->GetNumValue();
-            if(p->GetHand()[i]->GetSuit() == trump_suit){
-                int temp = p->GetHand()[i]->GetNumValue();
-                if(p->GetHand()[i]->GetRank() == "Jack"){
-                    p->GetHand()[i]->True_Num_Value = temp + 26;
-                }
-                else{
-                   p->GetHand()[i]->True_Num_Value = temp + 20 ;
-                }
-            }
-
-            else if(p->GetHand()[i]->GetRank() == "Jack" && p->GetHand()[i]->GetSuit() == sister_suit){
-                p->GetHand()[i]->True_Num_Value = temp + 25;
-            }
-            else if(p->GetHand()[i]->GetSuit() == led_suit){
-                p->GetHand()[i]->True_Num_Value = temp +10;
-            }
-            else{
-                p->GetHand()[i]->True_Num_Value = temp;
-            }
-        }
-    }
+    UpdateCardValues();
 }
 
 std::vector<Card*> Euchre::Trick(){
@@ -193,8 +170,11 @@ void Euchre::ScoreTrick(std::vector<Card*> playedCards){
 
     for(int i = 1; i < 4; i++)
     {
-        if(playedCards[i]->GetNumValue() > WinningCard->GetNumValue())
+        playedCards[i]->DisplayCard();
+        std::cout << " Value: " << playedCards[i]->True_Num_Value << std::endl;
+        if(playedCards[i]->True_Num_Value > WinningCard->True_Num_Value)
         {
+            std::cout<< playedCards[i]->True_Num_Value << " > " << WinningCard->True_Num_Value << std::endl;
             WinningCard = playedCards[i];
             winIndex = (firstPlayer+i)%4;
         }
@@ -259,12 +239,29 @@ void Euchre::UpdateCardValues(){
     
     //set new values for each of the cards
     for(auto p : players){
+        std::cout << p->GetName() << std::endl;
         for(int i = 0; i < p->GetHand().size(); i++){
             int temp = p->GetHand()[i]->GetNumValue();
+            if(p->GetHand()[i]->GetSuit() == trump_suit){
+                if(p->GetHand()[i]->GetRank() == "Jack"){
+                    p->GetHand()[i]->True_Num_Value = temp + 26;
+                }
+                else{
+                   p->GetHand()[i]->True_Num_Value = temp + 20 ;
+                }
+            }
 
-            if(p->GetHand()[i]->GetSuit() == led_suit){
+            else if(p->GetHand()[i]->GetRank() == "Jack" && p->GetHand()[i]->GetSuit() == sister_suit){
+                p->GetHand()[i]->True_Num_Value = temp + 25;
+            }
+            else if(p->GetHand()[i]->GetSuit() == led_suit){
                 p->GetHand()[i]->True_Num_Value = temp +10;
             }
+            else{
+                p->GetHand()[i]->True_Num_Value = temp;
+            }
+            p->GetHand()[i]->DisplayCard();
+            std::cout << ": " << p->GetHand()[i]->True_Num_Value << std::endl;
         }
     }
 }
