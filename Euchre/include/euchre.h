@@ -21,8 +21,6 @@ public:
     void GameLoop();
     void Setup();
     void Bid();
-    void Play();
-    void Evaluate();
     void ScoreTrick();
     void ScoreHand();
     std::vector<Card*> Trick();
