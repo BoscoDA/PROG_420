@@ -2,6 +2,7 @@
 #include "item.h"
 #include <iostream>
 #include <map>
+#include <cmath>
 
 Cafe::Cafe()
 {
@@ -26,8 +27,8 @@ void Cafe::loop()
 
 void Cafe::cafeInit()
 {
-    double prices[5] = {3.40, 2.55, 1.50, 3.00, 2.85};
-    std::string names[5] = {"Iced Coffee", "Coffee", "Bagel", "Cinnamon Roll", "Egg and Cheese Sandwich"};
+    double prices[5] = { 3.40, 2.55, 1.50, 3.00, 2.85 };
+    std::string names[5] = { "Iced Coffee", "Coffee", "Bagel", "Cinnamon Roll", "Egg and Cheese Sandwich" };
     for (int i = 0; i < this->len; i++)
     {
         (*this).inventory[i].setName(names[i]);
@@ -156,9 +157,9 @@ int Cafe::pay()
     return amountPaid;
 }
 
-std::vector<int> *Cafe::calculateChange(int change, std::map<int, std::vector<int>> *memo)
+std::vector<int>* Cafe::calculateChange(int change, std::map<int, std::vector<int>>* memo)
 {
-    int currency_deno[] = {1, 5, 10, 25, 100, 500, 1000, 2000, 5000, 10000};
+    int currency_deno[] = { 1, 5, 10, 25, 100, 500, 1000, 2000, 5000, 10000 };
     int len = sizeof(currency_deno) / sizeof(currency_deno[0]);
 
     if (memo->count(change) == 1)
@@ -168,18 +169,18 @@ std::vector<int> *Cafe::calculateChange(int change, std::map<int, std::vector<in
 
     if (change == 0)
     {
-        std::vector<int> *temp = new std::vector<int>({});
+        std::vector<int>* temp = new std::vector<int>({});
         return temp;
     }
 
-    std::vector<int> *shortest = new std::vector<int>();
+    std::vector<int>* shortest = new std::vector<int>();
 
     for (int i = 0; i < len; i++)
     {
         if (currency_deno[i] <= change)
         {
             int remainder = change - currency_deno[i];
-            std::vector<int> *combo = new std::vector<int>();
+            std::vector<int>* combo = new std::vector<int>();
             (*combo) = (*calculateChange(remainder, memo));
             (*combo).push_back(currency_deno[i]);
 
@@ -202,13 +203,13 @@ void Cafe::payLoop()
     if (amountPaid > total)
     {
         double change = amountPaid - total;
-        int changeInt = (change)*100;
+        int changeInt = std::round((change) * 100);
 
         std::cout << "\nTotal Change: " << change << std::endl;
         std::cout << "\n----------------------------------------------------------" << std::endl;
 
         std::map<int, std::vector<int>> memo;
-        std::vector<int> *temp = calculateChange(changeInt, &memo);
+        std::vector<int>* temp = calculateChange(changeInt, &memo);
 
         std::cout << "\nDispensing Change...\n";
         for (auto it = temp->begin(); it != temp->end(); it++)
