@@ -5,10 +5,10 @@
 
 Cafe::Cafe()
 {
-    (*this).inventory = new Item[9];
-    (*this).customer_order = new Item[9];
-    (*this).len = 9;
-    (*this).endLoop = false;
+    this->inventory = new Item[5];
+    this->customer_order = new Item[5];
+    this->len = 5;
+    this->endLoop = false;
 };
 
 void Cafe::loop()
@@ -26,9 +26,9 @@ void Cafe::loop()
 
 void Cafe::cafeInit()
 {
-    double prices[9] = {3.40 2.55, 1.50, 3.00, 2.85};
-    std::string names[9] = {"Iced Coffee", "Coffee", "Bagel" "Cinnamon Roll", "Egg and Cheese Sandwich"};
-    for (int i = 0; i < (*this).len; i++)
+    double prices[5] = {3.40, 2.55, 1.50, 3.00, 2.85};
+    std::string names[5] = {"Iced Coffee", "Coffee", "Bagel", "Cinnamon Roll", "Egg and Cheese Sandwich"};
+    for (int i = 0; i < this->len; i++)
     {
         (*this).inventory[i].setName(names[i]);
         (*this).inventory[i].setPrice(prices[i]);
@@ -42,19 +42,19 @@ void Cafe::displayMenu()
     std::cout.precision(2);
     std::cout << std::fixed;
     std::cout << "--------------------------Drinks--------------------------" << std::endl;
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < 2; i++)
     {
-        std::cout << i + 1 << "). " << (*this).inventory[i].getName() << " $" << (*this).inventory[i].getPrice() << std::endl;
+        std::cout << i + 1 << "). " << this->inventory[i].getName() << " $" << this->inventory[i].getPrice() << std::endl;
     }
     std::cout << "-------------------------Pastries-------------------------" << std::endl;
-    for (int i = 4; i < 7; i++)
+    for (int i = 2; i < 4; i++)
     {
-        std::cout << i + 1 << "). " << (*this).inventory[i].getName() << " $" << (*this).inventory[i].getPrice() << std::endl;
+        std::cout << i + 1 << "). " << this->inventory[i].getName() << " $" << this->inventory[i].getPrice() << std::endl;
     }
     std::cout << "------------------------Sandwiches------------------------" << std::endl;
-    for (int i = 7; i < len; i++)
+    for (int i = 4; i < len; i++)
     {
-        std::cout << i + 1 << "). " << (*this).inventory[i].getName() << " $" << (*this).inventory[i].getPrice() << std::endl;
+        std::cout << i + 1 << "). " << this->inventory[i].getName() << " $" << this->inventory[i].getPrice() << std::endl;
     }
     std::cout << "----------------------------------------------------------" << std::endl;
 }
@@ -65,13 +65,13 @@ void Cafe::displayOrder()
     std::cout << "--------------------------Order---------------------------" << std::endl;
     for (int i = 0; i < len; i++)
     {
-        if ((*this).customer_order[i].getQuant() > 0)
+        if (this->customer_order[i].getQuant() > 0)
         {
-            std::cout << (*this).customer_order[i].getName() << " x" << (*this).customer_order[i].getQuant() << std::endl;
+            std::cout << this->customer_order[i].getName() << " x" << this->customer_order[i].getQuant() << std::endl;
         }
     }
     std::cout << "" << std::endl;
-    std::cout << "Order Total: " << (*this).total << std::endl;
+    std::cout << "Order Total: " << this->total << std::endl;
     std::cout << "----------------------------------------------------------" << std::endl;
 }
 
@@ -105,7 +105,7 @@ void Cafe::cafeOrder()
         addToOrder(choice);
         break;
     case 6:
-        (*this).endLoop = true;
+        this->endLoop = true;
         break;
     default:
         std::cout << "That is not a valid menu option, try #1-5 or 6 to checkout." << std::endl;
@@ -115,7 +115,7 @@ void Cafe::cafeOrder()
 void Cafe::addToOrder(int index)
 {
     index = index - 1;
-    std::cout << "How many " << (*this).inventory[index].getName() << "'s would you like to order?" << std::endl;
+    std::cout << "How many " << this->inventory[index].getName() << "'s would you like to order?" << std::endl;
 
     std::string errorMsg = "Input invalid.";
 
@@ -126,20 +126,20 @@ void Cafe::addToOrder(int index)
         quantity = validInput(errorMsg);
     }
 
-    (*this).customer_order[index].setQuant(quantity);
+    this->customer_order[index].setQuant(quantity);
 
     calculateTotal(index, quantity);
 }
 
 void Cafe::calculateTotal(int index, int quantity)
 {
-    total += (*this).inventory[index].getPrice() * quantity;
+    total += this->inventory[index].getPrice() * quantity;
 }
 
 int Cafe::pay()
 {
     double amountPaid = 0;
-    double total = (*this).getTotal();
+    double total = this->getTotal();
 
     while (amountPaid < total)
     {
@@ -161,7 +161,7 @@ std::vector<int> *Cafe::calculateChange(int change, std::map<int, std::vector<in
     int currency_deno[] = {1, 5, 10, 25, 100, 500, 1000, 2000, 5000, 10000};
     int len = sizeof(currency_deno) / sizeof(currency_deno[0]);
 
-    if ((*memo).count(change) == 1)
+    if (memo->count(change) == 1)
     {
         return &(*memo)[change];
     }
@@ -183,7 +183,7 @@ std::vector<int> *Cafe::calculateChange(int change, std::map<int, std::vector<in
             (*combo) = (*calculateChange(remainder, memo));
             (*combo).push_back(currency_deno[i]);
 
-            if ((*shortest).empty() == true || (*combo).capacity() < (*shortest).capacity())
+            if (shortest->empty() == true || combo->capacity() < shortest->capacity())
             {
                 shortest = combo;
             }
@@ -211,7 +211,7 @@ void Cafe::payLoop()
         std::vector<int> *temp = calculateChange(changeInt, &memo);
 
         std::cout << "\nDispensing Change...\n";
-        for (auto it = (*temp).begin(); it != (*temp).end(); it++)
+        for (auto it = temp->begin(); it != temp->end(); it++)
         {
             double temp = (double)*it;
             temp = temp / 100;
